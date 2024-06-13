@@ -7,6 +7,10 @@ describe("ship", () => {
     expect(myShip).toHaveProperty("hit");
   });
 
+  it("has a length", () => {
+    expect(myShip.length).toBe(5);
+  });
+
   it("is sunkable", () => {
     expect(myShip).toHaveProperty("isSunk");
   });

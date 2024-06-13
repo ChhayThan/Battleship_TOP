@@ -17,5 +17,6 @@ export default function Ship(_length, _hitCounter = 0, _sinkStatus = false) {
   return {
     hit,
     isSunk,
+    length,
   };
 }
