@@ -3,7 +3,7 @@ import Gameboard from "./gameBoard";
 import Ship from "./ship";
 import Player from "./player";
 
-const player = Player("Player");
+const player = Player("Player", true);
 const computer = Player("Computer");
 
 const carrierShip = Ship(5);
@@ -18,18 +18,20 @@ player.gameBoard.placeShip([7, 9], destroyerShip);
 player.gameBoard.placeShip([5, 7], submarine);
 player.gameBoard.placeShip([9, 9], patrolBoat);
 
-// computer.gameBoard.placeShip([9, 0], carrierShip, true);
-// computer.gameBoard.placeShip([9, 9], battleShip, true);
-// computer.gameBoard.placeShip([2, 7], destroyerShip);
-// computer.gameBoard.placeShip([5, 7], submarine, true);
-// computer.gameBoard.placeShip([1, 9], patrolBoat, true);
+computer.gameBoard.placeShip([9, 0], carrierShip, true);
+computer.gameBoard.placeShip([9, 9], battleShip, true);
+computer.gameBoard.placeShip([2, 7], destroyerShip);
+computer.gameBoard.placeShip([5, 7], submarine, true);
+computer.gameBoard.placeShip([1, 9], patrolBoat, true);
 
 let playerGrid = player.gameBoard.getGrid();
 let computerGrid = player.gameBoard.getGrid();
 
-function updateGrid(playerGrid, computerGrid) {
+function renderGrid(playerGrid, computerGrid) {
   let playerGridDiv = document.querySelector("div#playerGrid");
+  playerGridDiv.innerHTML = "";
   let computerGridDiv = document.querySelector("div#computerGrid");
+  computerGridDiv.innerHTML = "";
 
   for (let i = 0; i < playerGrid.length; i++) {
     for (let j = 0; j < playerGrid[i].length; j++) {
@@ -39,6 +41,12 @@ function updateGrid(playerGrid, computerGrid) {
       cell.classList.add("cell");
       if (playerGrid[i][j] !== null && Object.hasOwn(playerGrid[i][j], "hit")) {
         cell.classList.add("ship");
+      }
+      if (
+        computer.getTurn() &&
+        (playerGrid[i][j] !== "X" || playerGrid[i][j] !== "O")
+      ) {
+        cell.classList.add("active");
       }
       playerGridDiv.appendChild(cell);
     }
@@ -50,7 +58,10 @@ function updateGrid(playerGrid, computerGrid) {
       cell.dataset.row = i;
       cell.dataset.col = j;
       cell.classList.add("cell");
-      if (computerGrid[i][j] !== "X" || computerGrid[i][j] !== "O") {
+      if (
+        player.getTurn() &&
+        (computerGrid[i][j] !== "X" || computerGrid[i][j] !== "O")
+      ) {
         cell.classList.add("active");
       }
       computerGridDiv.appendChild(cell);
@@ -58,4 +69,9 @@ function updateGrid(playerGrid, computerGrid) {
   }
 }
 
-updateGrid(playerGrid, computerGrid);
+function switchTurns(player1, player2) {
+  player1.changeTurn();
+  player2.changeTurn();
+}
+
+renderGrid(playerGrid, computerGrid);

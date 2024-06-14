@@ -35,6 +35,10 @@ div.cell.ship {
 
 div.cell.active:hover {
   background-color: rgb(238, 238, 238);
+  cursor: pointer;
+}
+div.cell.active:active {
+  transform: translateY(1px);
 }
 
 div.grid {
