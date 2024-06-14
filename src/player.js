@@ -5,7 +5,8 @@ export default function Player(name, playerTurn = false) {
   let turn = playerTurn;
 
   function changeTurn() {
-    turn = true;
+    turn = !turn;
+    return turn;
   }
   function getTurn() {
     return turn;

@@ -24,13 +24,17 @@ div.gridContainer {
   gap: 50px;
 }
 
+div.gridContainer.paused {
+  cursor: disabled;
+}
+
 div.cell {
   border: 1px solid rgb(34, 34, 34);
   background-color: white;
 }
 
 div.cell.ship {
-  background-color: rgb(70, 70, 70);
+  background-color: rgb(255, 146, 146);
 }
 
 div.cell.active:hover {
@@ -41,6 +45,13 @@ div.cell.active:active {
   transform: translateY(1px);
 }
 
+div.cell.hit {
+  background-color: rgb(158, 89, 89);
+}
+div.cell.miss {
+  background-color: rgb(184, 184, 184);
+}
+
 div.grid {
   display: grid;
   width: 300px;
@@ -48,4 +59,8 @@ div.grid {
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   border: 1px solid rgb(34, 34, 34);
+}
+
+div.message h1 {
+  font-size: 2rem;
 }
