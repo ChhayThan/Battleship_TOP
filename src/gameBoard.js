@@ -53,6 +53,10 @@ export default function Gameboard() {
     return true;
   }
 
+  function getGrid() {
+    return grid;
+  }
+
   function resetBoard() {
     grid = [
       [null, null, null, null, null, null, null, null, null, null],
@@ -76,5 +80,6 @@ export default function Gameboard() {
     checkFleetStatus,
     receiveAttack,
     resetBoard,
+    getGrid,
   };
 }

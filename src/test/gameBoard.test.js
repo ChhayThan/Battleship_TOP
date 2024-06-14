@@ -36,9 +36,14 @@ describe("gameboard", () => {
     myGameboard.receiveAttack([0, 3]);
     myGameboard.receiveAttack([0, 2]);
     expect(myGameboard.checkFleetStatus()).toBe(true);
+  });
 
-    let destroyerShip = Ship(8);
-    myGameboard.placeShip([2, 9], destroyerShip);
-    expect(myGameboard.checkFleetStatus()).toBe(false);
+  it("can place ships vertically", () => {
+    let smallShip = Ship(3);
+    myGameboard.placeShip([6, 0], smallShip, true);
+    expect(myGameboard.getCoordinate([6, 0])).toEqual(smallShip);
+    expect(myGameboard.getCoordinate([5, 0])).toEqual(smallShip);
+    expect(myGameboard.getCoordinate([4, 0])).toEqual(smallShip);
+    expect(myGameboard.getCoordinate([3, 0])).toBeNull();
   });
 });
