@@ -1,6 +1,11 @@
-# webpackTemplate
+# BATTLESHIP - TOP Project
 
-Includes ESLint
+## LINK: https://chhaythan.github.io/Battleship_TOP/
+
+Classic game of battleship
+
+Build this project to practice Test Driven Development (TDD). (Only tested functions, not UI)
+Used webpack, Jest to test (Babel), ESlint
 
 ## Commands
 
