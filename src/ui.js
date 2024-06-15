@@ -2,31 +2,15 @@ import Ship from "./ship";
 import Player from "./player";
 
 export default function userInterface() {
-  const player = Player("Eric", true);
+  const player = Player("User", true);
   const computer = Player("Computer");
-
-  //   const carrierShip = Ship(5);
-  //   const battleShip = Ship(4);
-  //   const destroyerShip = Ship(3);
-  //   const submarine = Ship(3);
-  //   const patrolBoat = Ship(2);
-
-  //   player.gameBoard.placeShip([0, 5], Ship(5));
-  //   player.gameBoard.placeShip([5, 0], Ship(4), true);
-  //   player.gameBoard.placeShip([7, 9], Ship(3));
-  //   player.gameBoard.placeShip([5, 7], Ship(3));
-  //   player.gameBoard.placeShip([9, 9], Ship(2));
 
   randomizeShip(player);
   randomizeShip(computer);
 
-  //   computer.gameBoard.placeShip([9, 0], Ship(5), true);
-  //   computer.gameBoard.placeShip([9, 9], Ship(4), true);
-  //   computer.gameBoard.placeShip([2, 7], Ship(3));
-  //   computer.gameBoard.placeShip([5, 7], Ship(3), true);
-  //   computer.gameBoard.placeShip([1, 9], Ship(2), true);
-
   function randomizeShip(player) {
+    player.gameBoard.resetBoard();
+
     let fleet = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
 
     for (let i = 0; i < fleet.length; i++) {
@@ -40,13 +24,11 @@ export default function userInterface() {
         let coordinates = [randomXCoordinate, randomYCoordinate];
         if (randomBoolVertical && ship.length <= randomXCoordinate) {
           if (checkSpace(player, ship.length, coordinates, true)) {
-            console.log({ coordinates, randomBoolVertical, ship });
             player.gameBoard.placeShip(coordinates, ship, randomBoolVertical);
             shipAdded = true;
           }
         } else if (!randomBoolVertical && ship.length <= randomYCoordinate) {
           if (checkSpace(player, ship.length, coordinates, false)) {
-            console.log({ coordinates, randomBoolVertical, ship });
             player.gameBoard.placeShip(coordinates, ship, randomBoolVertical);
             shipAdded = true;
           }
@@ -175,14 +157,36 @@ export default function userInterface() {
       cell.addEventListener(
         "click",
         () => {
+          const restartBtn = document.querySelector("button#restart");
+          if (!restartBtn.classList.contains("active")) {
+            restartBtn.classList.add("active");
+          }
           const coordinates = [cell.dataset.row, cell.dataset.col];
           placePlayerMark(coordinates);
           placeComputerMark();
           addEventListeners(player, computer);
+
+          let winner = checkWinner(player, computer);
+          if (winner) {
+            endGame(winner);
+          }
         },
         { once: true }
       );
     });
+
+    const restartBtn = document.querySelector("button#restart");
+
+    if (restartBtn.classList.contains("active")) {
+      restartBtn.addEventListener(
+        "click",
+        () => {
+          restartBtn.classList.remove("active");
+          restartGame(player, computer);
+        },
+        { once: true }
+      );
+    }
   }
 
   function placeComputerMark() {
@@ -195,12 +199,6 @@ export default function userInterface() {
     player.gameBoard.receiveAttack(coordinates);
     switchTurns(player, computer);
     renderGrid(player.gameBoard.getGrid(), computer.gameBoard.getGrid());
-
-    if (player.gameBoard.checkFleetStatus()) {
-      endGame(player);
-    } else if (computer.gameBoard.checkFleetStatus()) {
-      endGame(computer);
-    }
   }
 
   function placePlayerMark(coordinates) {
@@ -221,7 +219,17 @@ export default function userInterface() {
     });
 
     const message = document.querySelector("div.message h1");
-    message.innerText = `${player.name} is the winner!`;
+    message.innerText = `${winner.name} is the winner!`;
+  }
+
+  function checkWinner(player1, player2) {
+    if (player1.gameBoard.checkFleetStatus()) {
+      return player2;
+    }
+    if (player2.gameBoard.checkFleetStatus()) {
+      return player1;
+    }
+    return false;
   }
 
   function restartGame(player1, player2) {
@@ -229,6 +237,9 @@ export default function userInterface() {
     player2.gameBoard.resetBoard();
     randomizeShip(player1);
     randomizeShip(player2);
+
+    renderGrid(player1.gameBoard.getGrid(), player2.gameBoard.getGrid());
+    addEventListeners(player1, player2);
   }
 
   return {

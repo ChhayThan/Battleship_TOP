@@ -74,6 +74,10 @@ export default function Gameboard() {
     fleet = [];
   }
 
+  function getFleet() {
+    return fleet;
+  }
+
   return {
     placeShip,
     getCoordinate,
@@ -81,5 +85,6 @@ export default function Gameboard() {
     receiveAttack,
     resetBoard,
     getGrid,
+    getFleet,
   };
 }
