@@ -8,6 +8,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
 }
 
 header {
@@ -63,4 +64,27 @@ div.grid {
 
 div.message h1 {
   font-size: 2rem;
+}
+
+.btn {
+  padding: 10px;
+  border: none;
+  background-color: rgb(100, 55, 55);
+  color: white;
+  font-size: 1.5rem;
+
+  cursor: disabled;
+}
+
+.btn.active {
+  background-color: rgb(158, 89, 89);
+  cursor: pointer;
+}
+
+.btn.active:hover {
+  background-color: rgb(156, 95, 95);
+}
+
+.btn.active:active {
+  transform: translateY(2px);
 }

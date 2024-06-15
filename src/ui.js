@@ -2,26 +2,83 @@ import Ship from "./ship";
 import Player from "./player";
 
 export default function userInterface() {
-  const player = Player("Player", true);
+  const player = Player("Eric", true);
   const computer = Player("Computer");
 
-  const carrierShip = Ship(5);
-  const battleShip = Ship(4);
-  const destroyerShip = Ship(3);
-  const submarine = Ship(3);
-  const patrolBoat = Ship(2);
+  //   const carrierShip = Ship(5);
+  //   const battleShip = Ship(4);
+  //   const destroyerShip = Ship(3);
+  //   const submarine = Ship(3);
+  //   const patrolBoat = Ship(2);
 
-  player.gameBoard.placeShip([0, 5], carrierShip);
-  player.gameBoard.placeShip([5, 0], battleShip, true);
-  player.gameBoard.placeShip([7, 9], destroyerShip);
-  player.gameBoard.placeShip([5, 7], submarine);
-  player.gameBoard.placeShip([9, 9], patrolBoat);
+  //   player.gameBoard.placeShip([0, 5], Ship(5));
+  //   player.gameBoard.placeShip([5, 0], Ship(4), true);
+  //   player.gameBoard.placeShip([7, 9], Ship(3));
+  //   player.gameBoard.placeShip([5, 7], Ship(3));
+  //   player.gameBoard.placeShip([9, 9], Ship(2));
 
-  computer.gameBoard.placeShip([9, 0], carrierShip, true);
-  computer.gameBoard.placeShip([9, 9], battleShip, true);
-  computer.gameBoard.placeShip([2, 7], destroyerShip);
-  computer.gameBoard.placeShip([5, 7], submarine, true);
-  computer.gameBoard.placeShip([1, 9], patrolBoat, true);
+  randomizeShip(player);
+  randomizeShip(computer);
+
+  //   computer.gameBoard.placeShip([9, 0], Ship(5), true);
+  //   computer.gameBoard.placeShip([9, 9], Ship(4), true);
+  //   computer.gameBoard.placeShip([2, 7], Ship(3));
+  //   computer.gameBoard.placeShip([5, 7], Ship(3), true);
+  //   computer.gameBoard.placeShip([1, 9], Ship(2), true);
+
+  function randomizeShip(player) {
+    let fleet = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
+
+    for (let i = 0; i < fleet.length; i++) {
+      let ship = fleet[i];
+      let shipAdded = false;
+
+      while (shipAdded === false) {
+        let randomBoolVertical = Math.random() >= 0.5;
+        let randomXCoordinate = Math.floor(Math.random() * 10);
+        let randomYCoordinate = Math.floor(Math.random() * 10);
+        let coordinates = [randomXCoordinate, randomYCoordinate];
+        if (randomBoolVertical && ship.length <= randomXCoordinate) {
+          if (checkSpace(player, ship.length, coordinates, true)) {
+            console.log({ coordinates, randomBoolVertical, ship });
+            player.gameBoard.placeShip(coordinates, ship, randomBoolVertical);
+            shipAdded = true;
+          }
+        } else if (!randomBoolVertical && ship.length <= randomYCoordinate) {
+          if (checkSpace(player, ship.length, coordinates, false)) {
+            console.log({ coordinates, randomBoolVertical, ship });
+            player.gameBoard.placeShip(coordinates, ship, randomBoolVertical);
+            shipAdded = true;
+          }
+        }
+      }
+    }
+  }
+
+  function checkSpace(player, shipLength, coordinates, vertical) {
+    for (let i = 0; i < shipLength; i++) {
+      if (vertical) {
+        if (
+          player.gameBoard.getCoordinate([
+            coordinates[0] - i,
+            coordinates[1],
+          ]) != null
+        ) {
+          return false;
+        }
+      } else {
+        if (
+          player.gameBoard.getCoordinate([
+            coordinates[0],
+            coordinates[1] - i,
+          ]) != null
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   function renderGrid(playerGrid, computerGrid) {
     let playerGridDiv = document.querySelector("div#playerGrid");
@@ -139,11 +196,10 @@ export default function userInterface() {
     switchTurns(player, computer);
     renderGrid(player.gameBoard.getGrid(), computer.gameBoard.getGrid());
 
-    if (
-      player.gameBoard.checkFleetStatus() ||
-      computer.gameBoard.checkFleetStatus()
-    ) {
-      endGame();
+    if (player.gameBoard.checkFleetStatus()) {
+      endGame(player);
+    } else if (computer.gameBoard.checkFleetStatus()) {
+      endGame(computer);
     }
   }
 
@@ -166,6 +222,13 @@ export default function userInterface() {
 
     const message = document.querySelector("div.message h1");
     message.innerText = `${player.name} is the winner!`;
+  }
+
+  function restartGame(player1, player2) {
+    player1.gameBoard.resetBoard();
+    player2.gameBoard.resetBoard();
+    randomizeShip(player1);
+    randomizeShip(player2);
   }
 
   return {
